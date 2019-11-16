@@ -27,7 +27,6 @@ class LoginTokenSerializer(Serializer):
         return self.validated_data
 
     def validate(self, attrs):
-        print("atts", attrs)
 
         credentials = {
             self.username_field: attrs.get(self.username_field),
