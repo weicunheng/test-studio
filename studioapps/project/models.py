@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.deletion import SET_NULL
 from constants.constants import LogoImgSavePathEnum
@@ -26,12 +28,13 @@ class Project(models.Model):
     """
     name = models.CharField(max_length=20, unique=True, help_text="项目名称")
     introduction = models.TextField("项目简介")
-    creater = models.CharField(max_length=20, help_text="创建者")
+    creater = models.ForeignKey(to=User, blank=True, null=True, help_text="创建者", on_delete=models.SET_NULL)
     state = models.SmallIntegerField(choices=APP_STATUS_CHOICES, help_text="app的开发状态",
                                      default=AppStatusEnum.LOCAL.value)
-    tags = models.ForeignKey(AppTags, null=True, blank=True, on_delete=SET_NULL, help_text="项目分类")
+    tags = models.ForeignKey(AppTags, null=True, blank=True, on_delete=SET_NULL, help_text="项目标签")
     language = models.SmallIntegerField(choices=APP_LANGUAGE_CHOICES, default=AppLanguage.PYTHON, help_text="应用开发语言")
     logo = models.ImageField(blank=True, null=True, upload_to=LogoImgSavePathEnum.API)
+    is_delete = models.BooleanField(default=False, verbose_name="是否删除")
 
     class Meta:
         db_table = "ts_project"
