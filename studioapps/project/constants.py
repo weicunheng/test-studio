@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext as _
 """
 常量定义
 """
@@ -34,3 +35,20 @@ APP_LANGUAGE_CHOICES = [
     (AppLanguage.JAVA, "Java"),
     (AppLanguage.PHP, "PHP"),
 ]
+
+
+class ProjectEnvironmentEnum(object):
+    LOCAL = 1001
+    DEV = 1002
+    UAT = 1003
+    PROD = 1004
+
+
+PROJECT_ENVIRON_CHOICES = (
+    (ProjectEnvironmentEnum.LOCAL, _("本地环境")),
+    (ProjectEnvironmentEnum.DEV, _("测试环境")),
+    (ProjectEnvironmentEnum.UAT, _("验收环境")),
+    (ProjectEnvironmentEnum.PROD, _("生产环境")),
+)
+
+PROJECT_ENVIRON_CHOICES_DICT = dict(PROJECT_ENVIRON_CHOICES)
