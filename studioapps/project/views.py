@@ -15,10 +15,17 @@ class ProjectsAPIView(BaseAPIView):
     serializer_class = serializaers.ProjectSerializer
 
     def get(self, request):
-        projects = models.Project.objects.filter(creater=request.user)
-        return Response(self.serializer_class(projects).data)
+        """
+        返回项目列表
+        """
+        projects = models.Project.objects.filter(creater=request.user).values(
+            'name', 'code', 'introduction', 'state', 'tags')
+        return Response(projects)
 
     def post(self, request):
+        """
+        创建项目
+        """
         serializer = self.serializer_class(data=request.data)
 
         try:
@@ -36,36 +43,42 @@ class ProjectAPIView(BaseAPIView):
     serializer_class = serializaers.ProjectSerializer
 
     def get(self, request, project_id):
+        """
+        获取项目详细信息
+        """
         try:
-            project = models.Project.objects.get(pk=project_id)
-            return Response(self.serializer_class(project).data)
+            project = models.Project.objects.filter(pk=project_id)
+            if not project:
+                raise NotFound("ERROR_NOT_EXIST_PROJECT")
 
+            return Response(project.values('name', 'code', 'introduction', 'state', 'tags'))
         except models.Project.DoesNotExist:
             raise NotFound("ERROR_NOT_EXIST_PROJECT")
         except Exception as e:
             raise NotFound("ERROR_NOT_EXIST_PROJECT")
 
     def put(self, request, project_id):
+        """
+        更新项目信息
+        """
         try:
             project = models.Project.objects.get(pk=project_id)
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 serializer.update(project, serializer.validated_data)
-
             return Response(self.serializer_class(project).data)
-
         except models.Project.DoesNotExist:
             raise NotFound("ERROR_NOT_EXIST_PROJECT")
         except Exception as e:
             raise NotFound("ERROR_NOT_EXIST_PROJECT")
 
     def delete(self, request, project_id):
+        """
+        删除项目
+        """
         try:
-            project = models.Project.objects.get(pk=project_id)
-            project.is_delete = True
-            project.save()
-            return Response()
-
+            models.Project.objects.filter(pk=project_id).update(is_delete=True, creator=request.user)
+            return Response('OK')
         except models.Project.DoesNotExist:
             raise NotFound("ERROR_NOT_EXIST_PROJECT")
         except Exception as e:
@@ -76,20 +89,21 @@ class ProjectEnvironmentAPIView(BaseAPIView):
     serializer_class = serializaers.ProjectEnvironmentSerializer
 
     def post(self, request):
+        """
+        项目不同运行环境域名配置
+        """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        try:
-            project = models.Project.objects.get(pk=serializer.validated_data['project'])
-            models.ProjectEnvironment.objects.create(project=project, environ=serializer.validated_data['environ'],
-                                                     domain=serializer.validated_data['domain'])
-
-        except models.Project.DoesNotExist:
-            raise NotFound("ERROR_NOT_EXIST_PROJECT")
-        except Exception as e:
-            raise NotFound("ERROR_NOT_EXIST_PROJECT")
-
-        return Response('OK')
+        project_id = serializer.validated_data['project']
+        environ = serializer.validated_data['environ']
+        domain = serializer.validated_data['domain']
+        success, msg = models.ProjectEnvironment.create_by_project(project_id=project_id, environ=environ,
+                                                                   domain=domain)
+        if success:
+            return Response('OK')
+        else:
+            raise NotFound(msg)
 
 
 class ProjectUserAPIView(BaseAPIView):

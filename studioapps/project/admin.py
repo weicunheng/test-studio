@@ -1,3 +1,8 @@
 from django.contrib import admin
+from studioapps.project.models import *
 
-# Register your models here.
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'creator')
+    search_fields = ('name', 'code',)

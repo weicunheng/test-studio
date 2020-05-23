@@ -35,4 +35,4 @@ class ZhError(object):
     ERROR_USERNAME_PASSWORD_CANNOT_BE_EMPTY = _("用户名密码不能为空")
 
     ERROR_NOT_EXIST_PROJECT = _('项目不存在')
-    ERROR_PROJECT_IS_EXIST = _('项目不存在')
+    ERROR_PROJECT_IS_EXIST = _('项目已经存在')
