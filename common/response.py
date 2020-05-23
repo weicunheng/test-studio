@@ -87,7 +87,7 @@ class Version2APIView(APIView):
 
 class BaseAPIView(Version2APIView):
     def finalize_response(self, request, response, *args, **kwargs):
-        response = super(BaseResponse, self).finalize_response(request, response, *args, **kwargs)
+        response = super(BaseAPIView, self).finalize_response(request, response, *args, **kwargs)
 
         if hasattr(response, 'render') and callable(response.render):
             response.render()

@@ -1,26 +1,30 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.serializers import Serializer, ValidationError
-from rest_framework_jwt.compat import get_username_field, PasswordField
-from rest_framework_jwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+class PasswordField(serializers.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('style', {})
+
+        kwargs['style']['input_type'] = 'password'
+        kwargs['write_only'] = True
+
+        super().__init__(**kwargs)
 
 
 class LoginTokenSerializer(Serializer):
+    username_field = User.USERNAME_FIELD
+
     def __init__(self, *args, **kwargs):
 
         super(LoginTokenSerializer, self).__init__(*args, **kwargs)
 
         self.fields[self.username_field] = serializers.CharField()
         self.fields['password'] = PasswordField(write_only=True)
-
-    @property
-    def username_field(self):
-        return get_username_field()
 
     @property
     def object(self):
@@ -36,14 +40,14 @@ class LoginTokenSerializer(Serializer):
             user = authenticate(**credentials)
             if user:
                 if user.is_active:
-                    payload = jwt_payload_handler(user)
+                    token = RefreshToken.for_user(user).access_token
                     return {
-                        "token": jwt_encode_handler(payload),
+                        "token": str(token),
                         "user": user,
                     }
                 else:
-                    raise ValidationError("当前用户不可用")
+                    raise Exception("AUTHENTICATION_FAILED")
             else:
-                raise ValidationError("用户认证失败")
+                raise Exception("AUTHENTICATION_FAILED")
         else:
-            raise ValidationError("用户名密码不能为空")
+            raise Exception("ERROR_USERNAME_PASSWORD_CANNOT_BE_EMPTY")
