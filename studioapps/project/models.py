@@ -55,6 +55,7 @@ class Project(models.Model):
 
 class ProjectEnvironment(models.Model):
     project = models.ForeignKey(to='project.Project', on_delete=CASCADE, verbose_name=_("所属项目"))
+    project_name = models.CharField(max_length=50, verbose_name=_("项目名称"))
     environ = models.IntegerField(default=constants.ProjectEnvironmentEnum.LOCAL,
                                   choices=constants.PROJECT_ENVIRON_CHOICES, verbose_name=_("项目环境"))
     domain = models.URLField(max_length=100, verbose_name=_("域名"))

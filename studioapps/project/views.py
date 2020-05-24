@@ -88,14 +88,19 @@ class ProjectAPIView(BaseAPIView):
 class ProjectEnvironmentAPIView(BaseAPIView):
     serializer_class = serializaers.ProjectEnvironmentSerializer
 
-    def post(self, request):
+    def get(self, request, project_id):
+        environs = models.ProjectEnvironment.objects.filter(project_id=project_id).values(
+            'project_name', 'environ', 'domain'
+        )
+        return Response(environs)
+
+    def post(self, request, project_id):
         """
         项目不同运行环境域名配置
         """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        project_id = serializer.validated_data['project']
         environ = serializer.validated_data['environ']
         domain = serializer.validated_data['domain']
         success, msg = models.ProjectEnvironment.create_by_project(project_id=project_id, environ=environ,
@@ -117,8 +122,10 @@ class ProjectMembersAPIView(BaseAPIView):
 
 class ProjectDomainAPIView(BaseAPIView):
 
-    def get(self):
-        pass
+    def get(self, request, project_id):
+        environs = models.ProjectEnvironment.objects.filter(project_id=project_id)
+        memebers = self.serializer_class(project_members, many=True).data
+        return Response(memebers)
 
     def post(self):
         pass
