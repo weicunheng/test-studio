@@ -30,8 +30,8 @@ class Project(models.Model):
     """
     项目的基本信息
     """
-    name = models.CharField(max_length=20, unique=True, help_text="项目名称")
-    code = models.CharField(max_length=20, db_index=True, default=utils.gen_project_code(), verbose_name=_("项目code"))
+    name = models.CharField(max_length=50, unique=True, help_text="项目名称")
+    code = models.CharField(max_length=50, db_index=True, default=utils.gen_project_code(), verbose_name=_("项目code"))
     introduction = models.CharField(max_length=100, verbose_name=_("项目简介"))
     creator = models.ForeignKey(to=User, blank=True, null=True, help_text="创建者", on_delete=models.SET_NULL)
     creator_name = models.CharField(max_length=30, verbose_name=_("创建者姓名"))

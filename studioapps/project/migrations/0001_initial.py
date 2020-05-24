@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             name='Project',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='项目名称', max_length=20, unique=True)),
+                ('name', models.CharField(help_text='项目名称', max_length=50, unique=True)),
                 ('introduction', models.TextField(verbose_name='项目简介')),
                 ('state', models.SmallIntegerField(choices=[(0, '提测中'), (1, '开发中'), (2, '测试中'), (3, '已上线'), (4, '已下线')], default=0, help_text='app的开发状态')),
                 ('language', models.SmallIntegerField(choices=[(0, 'Python'), (1, 'Java'), (2, 'PHP')], default=0, help_text='应用开发语言')),

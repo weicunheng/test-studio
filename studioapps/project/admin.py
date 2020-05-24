@@ -6,3 +6,9 @@ from studioapps.project.models import *
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'code', 'creator')
     search_fields = ('name', 'code',)
+
+
+@admin.register(AppTags)
+class AppTagsAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code')
+    search_fields = ('name', 'code',)

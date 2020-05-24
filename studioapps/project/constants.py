@@ -14,8 +14,8 @@ class AppStatusEnum(object):
 
 
 APP_STATUS_CHOICES = [
-    (AppStatusEnum.LOCAL, "提测中"),
     (AppStatusEnum.DEV, "开发中"),
+    (AppStatusEnum.LOCAL, "提测中"),
     (AppStatusEnum.TESE, "测试中"),
     (AppStatusEnum.PROD, "已上线"),
     (AppStatusEnum.OFFLINE, "已下线"),
