@@ -12,3 +12,9 @@ class ProjectAdmin(admin.ModelAdmin):
 class AppTagsAdmin(admin.ModelAdmin):
     list_display = ('name', 'code')
     search_fields = ('name', 'code',)
+
+
+@admin.register(ProjectMembers)
+class ProjectMembersAdmin(admin.ModelAdmin):
+    list_display = ('project', 'name', 'permissionType',)
+    search_fields = ('project', 'name', 'permissionType',)

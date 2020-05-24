@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.deletion import SET_NULL, CASCADE
 from django.utils.translation import ugettext as _
-from rest_framework.exceptions import NotFound
 
 from studioapps.constants.constants import LogoImgSavePathEnum
 from studioapps.project import constants, utils
+from studioapps.account.models import UserProfile
 
 
 class AppTags(models.Model):
@@ -79,4 +79,18 @@ class ProjectEnvironment(models.Model):
     class Meta:
         db_table = "ts_project_environ"
         verbose_name = "项目环境域名配置"
+        verbose_name_plural = verbose_name
+
+
+class ProjectMembers(models.Model):
+    user = models.ForeignKey(User, related_name='member_user', on_delete=models.CASCADE, verbose_name=_('用户'))
+    name = models.CharField(max_length=20, verbose_name=_("人员姓名"))
+    profile = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE, verbose_name=_("人员信息"))
+    permissionType = models.IntegerField(max_length=50, verbose_name=_('权限角色'), choices=constants.PERMISSION_TYPE_CHOICES)
+    project = models.ForeignKey(Project, related_name='member_project', on_delete=models.CASCADE,
+                                verbose_name=_('所属项目'))
+
+    class Meta:
+        db_table = "ts_project_members"
+        verbose_name = "项目成员配置"
         verbose_name_plural = verbose_name

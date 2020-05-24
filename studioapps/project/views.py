@@ -18,7 +18,7 @@ class ProjectsAPIView(BaseAPIView):
         """
         返回项目列表
         """
-        projects = models.Project.objects.filter(creater=request.user).values(
+        projects = models.Project.objects.all().values(
             'name', 'code', 'introduction', 'state', 'tags')
         return Response(projects)
 
@@ -106,16 +106,19 @@ class ProjectEnvironmentAPIView(BaseAPIView):
             raise NotFound(msg)
 
 
-class ProjectUserAPIView(BaseAPIView):
+class ProjectMembersAPIView(BaseAPIView):
+    serializer_class = serializaers.ProjectMembersSerializer
 
-    def get(self, request):
+    def get(self, request, project_id):
+        project_members = models.ProjectMembers.objects.filter(project_id=project_id)
+        memebers = self.serializer_class(project_members, many=True).data
+        return Response(memebers)
+
+
+class ProjectDomainAPIView(BaseAPIView):
+
+    def get(self):
         pass
 
-    def put(self, request):
-        pass
-
-    def post(self, request):
-        pass
-
-    def delete(self, request):
+    def post(self):
         pass

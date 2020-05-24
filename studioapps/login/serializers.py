@@ -40,9 +40,10 @@ class LoginTokenSerializer(Serializer):
             user = authenticate(**credentials)
             if user:
                 if user.is_active:
-                    token = RefreshToken.for_user(user).access_token
+                    token = RefreshToken.for_user(user)
                     return {
-                        "token": str(token),
+                        "refresh": str(token),
+                        "token": str(token.access_token),
                         "user": user,
                     }
                 else:

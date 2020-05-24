@@ -50,4 +50,5 @@ class APILoginView(BaseAPIView):
 
         user = serializer.object.get('user') or request.user
         token = serializer.object.get('token')
-        return Response({'user': user, 'token': token})
+        refresh = serializer.object.get('refresh')
+        return Response({'user': user.username, 'token': token, 'refresh': refresh})
